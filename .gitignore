@@ -1,0 +1,6 @@
+.direnv
+.idea
+__pycache__
+build
+data_gouv_fr_mcp_server.egg-info
+.venv
