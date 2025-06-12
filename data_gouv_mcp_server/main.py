@@ -7,7 +7,7 @@ from typing import Dict, Any
 
 from mcp.server.fastmcp import FastMCP
 
-from infra.clients.http_client import HttpClient
+from data_gouv_mcp_server.infra.clients.http_client import HttpClient
 
 
 class McpDataGouv:
@@ -17,8 +17,6 @@ class McpDataGouv:
         self._register_tools()
 
     def _register_tools(self):
-        """Enregistre les outils MCP"""
-
         @self.mcp.tool()
         async def search_datasets(query: str, limit: int = 10) -> Dict[str, Any]:
             """
@@ -58,7 +56,7 @@ class McpDataGouv:
             dataset_id = ds.get("id", "")
             titre = ds.get("title", "Sans titre")
             description = ds.get("description", "")
-            url = ds.get("page", "")  # 'page' est l'URL de la page du dataset
+            url = ds.get("page", "")
 
             organization = ds.get("organization", {})
             org_name = organization.get("name", "") if organization else ""
@@ -73,7 +71,7 @@ class McpDataGouv:
             dataset_info = {
                 "id": dataset_id,
                 "titre": titre,
-                "description": description[:500] + ("..." if len(description) > 500 else ""),  # Limiter la description
+                "description": description[:500] + ("..." if len(description) > 500 else ""),
                 "url": url,
                 "organisation": org_name,
                 "tags": tags[:5],
@@ -86,8 +84,11 @@ class McpDataGouv:
             resultats.append(dataset_info)
         return resultats
 
-if __name__ == "__main__":
+def main():
     http_client = HttpClient("https://www.data.gouv.fr/api/1")
     mcp_data_gouv = McpDataGouv(http_client, "DataGouvFr")
 
     mcp_data_gouv.mcp.run()
+
+if __name__ == "__main__":
+    main()
